@@ -33,7 +33,7 @@ function draw() {
     if (totalThingsMade >= 1500 && document.getElementById('autoThingMakerMakerDiv').style.display != 'block') {
         document.getElementById('autoThingMakerMakerDiv').style.display = 'block'
     }
-    if (totalThingsMade >= 15000000000000 && document.getElementById('autoThingMakerMakerMakerDiv').style.display != 'block') {
+    if (totalThingsMade >= 15000000 && document.getElementById('autoThingMakerMakerMakerDiv').style.display != 'block') {
         document.getElementById('autoThingMakerMakerMakerDiv').style.display = 'block'
     }
     requestAnimationFrame(draw)
