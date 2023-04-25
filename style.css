@@ -1,0 +1,7 @@
+#prestigeProgressBarDiv {
+    position: absolute;
+    top: 8.5%;
+    left: 15%;
+    display: flex;
+    column-gap: 10px;
+}

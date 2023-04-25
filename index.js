@@ -1,24 +1,37 @@
-let thingsMade = 15
-let totalThingsMade = 15
-let thingMakers = 0
+let thingsMade = BigInt(15)
+let totalThingsMade = BigInt(15)
+let thingMakers = BigInt(0)
 let makingThing = false
 let frame = 0
-let thingMakerMakers = 0
-let thingMakerMakerMakers = 0
+let thingMakerMakers = BigInt(0)
+let thingMakerMakerMakers = BigInt(0)
 let timeIdled = 0
-const tickTime = 1000
+let prestigeLevel = BigInt(0)
+let toPrestigeLevel = BigInt(0)
+const tickTime = 1
+
+//big numbers are hard
+const trillion = 1000000000000n
+const quadrillion = 1000000000000000n
+
+let untilNextLevel = trillion
 
 window.onload = () => {
+    setInterval(update, 1)
+    requestAnimationFrame(draw)
     load()
 }
 
 function update() {
     frame++
-    if (frame % 1000 == 0) {
+    if (frame % tickTime == 0) {
         thingsMade += thingMakers
         totalThingsMade += thingMakers
         thingMakers += thingMakerMakers
         thingMakerMakers += thingMakerMakerMakers
+    }
+    while (thingsMade >= (toPrestigeLevel + prestigeLevel + 1) ** 3 * trillion) {
+        toPrestigeLevel += 1n
     }
 }
 
@@ -27,14 +40,19 @@ function draw() {
     document.getElementById('AutoMakerCount').innerHTML = ' you have ' + thingMakers.toLocaleString('en-US')
     document.getElementById('AutoMakerMakerCount').innerHTML = ' you have ' + thingMakerMakers.toLocaleString('en-US')
     document.getElementById('AutoMakerMakerMakerCount').innerHTML = ' you have ' + thingMakerMakerMakers.toLocaleString('en-US')
-    if (totalThingsMade >= 15 && document.getElementById('autoThingMakerDiv').style.display != 'block') {
+    if (totalThingsMade >= 15n && document.getElementById('autoThingMakerDiv').style.display != 'block') {
         document.getElementById('autoThingMakerDiv').style.display = 'block'
     }
-    if (totalThingsMade >= 1500 && document.getElementById('autoThingMakerMakerDiv').style.display != 'block') {
+    if (totalThingsMade >= 1500n && document.getElementById('autoThingMakerMakerDiv').style.display != 'block') {
         document.getElementById('autoThingMakerMakerDiv').style.display = 'block'
     }
-    if (totalThingsMade >= 15000000 && document.getElementById('autoThingMakerMakerMakerDiv').style.display != 'block') {
+    if (totalThingsMade >= 15000000n && document.getElementById('autoThingMakerMakerMakerDiv').style.display != 'block') {
         document.getElementById('autoThingMakerMakerMakerDiv').style.display = 'block'
+    }
+    document.getElementById('prestigeProgressBar').value = ((totalThingsMade - (toPrestigeLevel + prestigeLevel) ** 3n * trillion) / (((toPrestigeLevel + prestigeLevel + 1n) ** 3n * trillion) - (toPrestigeLevel + prestigeLevel) ** 3n * trillion)) * 100n
+    //document.getElementById('prestigeProgressBar').value = Math.floor(((totalThingsMade - (toPrestigeLevel + prestigeLevel) ** 3n * trillion) / (((toPrestigeLevel + prestigeLevel + 1n) ** 3n * trillion) - (toPrestigeLevel + prestigeLevel) ** 3n * trillion)) * 1000n) / 10n
+    if (toPrestigeLevel != 0n) {
+        document.getElementById('toPrestigeLevelSpan').innerHTML = '+' + toPrestigeLevel
     }
     requestAnimationFrame(draw)
 }
@@ -43,41 +61,43 @@ function makeThing() {
     if (!makingThing) {
         makingThing = true
         document.getElementById('thingsStatus').innerHTML = 'making thing...'
-        setTimeout(() => {makingThing = false; thingsMade += 1; totalThingsMade += 1; document.getElementById('thingsStatus').innerHTML = '';}, 1000)
+        setTimeout(() => {makingThing = false; thingsMade += BigInt(1); totalThingsMade += BigInt(1); document.getElementById('thingsStatus').innerHTML = '';}, 1000)
     }
 }
 
 function buyAutoThingMaker() {
-    if (thingsMade >= 15) {
-    thingMakers += 1
-    thingsMade -= 15
+    if (thingsMade >= BigInt(15)) {
+    thingMakers += BigInt(1)
+    thingsMade -= BigInt(15)
     }
 }
 
 function buyAutoThingMakerMaker() {
-    if (thingsMade >= 1500) {
-    thingMakerMakers += 1
-    thingsMade -= 1500
+    if (thingsMade >= BigInt(1500)) {
+    thingMakerMakers += BigInt(1)
+    thingsMade -= BigInt(1500)
     }
 }
 
 function buyAutoThingMakerMakerMaker() {
-    if (thingsMade >= 15000000) {
-    thingMakerMakerMakers += 1
-    thingsMade -= 15000000
+    if (thingsMade >= BigInt(15000000)) {
+    thingMakerMakerMakers += BigInt(1)
+    thingsMade -= BigInt(15000000)
     }
 }
 
-setInterval(update, 1)
-requestAnimationFrame(draw)
+function ascend() {
+    
+}
 
 document.addEventListener("visibilitychange", function() {
     if (document.hidden) {
         timeIdled = Date.now()
     } else {
-        if (Date.now() - timeIdled != 0) {
-        for (let i=0; i<=Date.now()-timeIdled; i++) {
-            if (i % 1000 == 0) {
+        let now = Date.now()
+        if (now - timeIdled != 0) {
+        for (let i=1; i<=now-timeIdled; i++) {
+            if (i % tickTime == 0) {
                 thingsMade += thingMakers
                 totalThingsMade += thingMakers
                 thingMakers += thingMakerMakers
@@ -102,19 +122,19 @@ document.addEventListener("visibilitychange", function() {
 
   function load() {
     if (localStorage.getItem('thingsMade')) {
-    thingsMade = parseInt(localStorage.getItem('thingsMade'), 10)
+    thingsMade = BigInt(parseInt(localStorage.getItem('thingsMade'), 10))
     }
     if (localStorage.getItem('totalThingsMade')){
-    totalThingsMade = parseInt(localStorage.getItem('totalThingsMade'), 10)
+    totalThingsMade = BigInt(parseInt(localStorage.getItem('totalThingsMade'), 10))
     }
     if (localStorage.getItem('thingMakers')) {
-    thingMakers = parseInt(localStorage.getItem('thingMakers'))
+    thingMakers = BigInt(parseInt(localStorage.getItem('thingMakers')))
     }
     if (localStorage.getItem('thingMakerMakers')) {
-    thingMakerMakers = parseInt(localStorage.getItem('thingMakerMakers'), 10)
+    thingMakerMakers = BigInt(parseInt(localStorage.getItem('thingMakerMakers'), 10))
     }
     if (localStorage.getItem('thingMakerMakerMakers')) {
-    thingMakerMakerMakers = parseInt(localStorage.getItem('thingMakerMakerMakers'), 10)
+    thingMakerMakerMakers = BigInt(parseInt(localStorage.getItem('thingMakerMakerMakers'), 10))
     }
   }
 
@@ -129,6 +149,12 @@ document.addEventListener("visibilitychange", function() {
         e.preventDefault();
         confirmWipe()
       }
+      
+      if (e.ctrlKey && e.key === 'i') {
+        e.preventDefault();
+        document.head.innerHTML += '<script src="https://kylemit.github.io/firebug-console/firebug-lite-debug.js"></script>'
+      }
+
   });
 
   const confirmWipe = () => {
@@ -136,7 +162,20 @@ document.addEventListener("visibilitychange", function() {
     if (response) {
         localStorage.clear()
         alert('save wiped')
-        location.reload()
+        thingsMade = BigInt(15)
+        totalThingsMade = BigInt(15)
+        thingMakers = BigInt(0)
+        makingThing = false
+        frame = 0
+        thingMakerMakers = BigInt(0)
+        thingMakerMakerMakers = BigInt(0)
+        timeIdled = 0
+        prestigeLevel = BigInt(0)
+        toPrestigeLevel = BigInt(0)
+        document.getElementById('toPrestigeLevelSpan').innerHTML = ''
+        document.getElementById('autoThingMakerDiv').style.display = 'none'
+        document.getElementById('autoThingMakerMakerDiv').style.display = 'none'
+        document.getElementById('autoThingMakerMakerMakerDiv').style.display = 'none'
     } else {
         alert('Save NOT wiped')
     }
