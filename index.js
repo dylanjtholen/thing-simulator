@@ -30,7 +30,7 @@ function update() {
         thingMakers += thingMakerMakers
         thingMakerMakers += thingMakerMakerMakers
     }
-    while (thingsMade >= (toPrestigeLevel + prestigeLevel + 1) ** 3 * trillion) {
+    while (thingsMade >= (toPrestigeLevel + prestigeLevel + 1n) ** 3n * trillion) {
         toPrestigeLevel += 1n
     }
 }
@@ -49,13 +49,8 @@ function draw() {
     if (totalThingsMade >= 15000000n && document.getElementById('autoThingMakerMakerMakerDiv').style.display != 'block') {
         document.getElementById('autoThingMakerMakerMakerDiv').style.display = 'block'
     }
-    try {
-    document.getElementById('prestigeProgressBar').value = Number((((totalThingsMade + 1n - (toPrestigeLevel + prestigeLevel) ** 3n * trillion) * 100n) / (100n * (((toPrestigeLevel + prestigeLevel + 1n) ** 3n * trillion) - (toPrestigeLevel + prestigeLevel) ** 3n * trillion))))
-    } catch (err) {
-        console.log(err)
-        throw(err)
-    }
-    //document.getElementById('prestigeProgressBar').value = Math.floor(((totalThingsMade - (toPrestigeLevel + prestigeLevel) ** 3n * trillion) / (((toPrestigeLevel + prestigeLevel + 1n) ** 3n * trillion) - (toPrestigeLevel + prestigeLevel) ** 3n * trillion)) * 1000n) / 10n
+    document.getElementById('prestigeProgressBar').value = Number(((totalThingsMade - (toPrestigeLevel + prestigeLevel) ** 3n * trillion) * 100n) / (1n * ((((toPrestigeLevel + prestigeLevel + 1n) ** 3n * trillion) - (toPrestigeLevel + prestigeLevel) ** 3n * trillion))))
+    //alert(Number(((totalThingsMade - (toPrestigeLevel + prestigeLevel) ** 3n * trillion) * 100n) / ((totalThingsMade + 1n - (toPrestigeLevel + prestigeLevel) ** 3n * trillion) * 10n)))
     if (toPrestigeLevel != 0n) {
         document.getElementById('toPrestigeLevelSpan').innerHTML = '+' + toPrestigeLevel
     }
