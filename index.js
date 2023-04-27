@@ -8,7 +8,7 @@ let thingMakerMakerMakers = BigInt(0)
 let timeIdled = 0
 let prestigeLevel = BigInt(0)
 let toPrestigeLevel = BigInt(0)
-const tickTime = 1
+const tickTime = 1000
 
 //big numbers are hard
 const trillion = 1000000000000n
