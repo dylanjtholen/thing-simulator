@@ -8,13 +8,22 @@ let thingMakerMakerMakers = BigInt(0)
 let timeIdled = 0
 let prestigeLevel = BigInt(0)
 let toPrestigeLevel = BigInt(0)
-const tickTime = 1
+let overflow = {
+    things: 0,
+    makers: 0,
+    makermakers: 0
+}
+const tickTime = 1000
 
-//big numbers are hard
+//big numbers are hard 
 const trillion = 1000000000000n
 const quadrillion = 1000000000000000n
 
 let untilNextLevel = trillion
+
+function l(what) {
+    return document.getElementById(what)
+}
 
 window.onload = () => {
     setInterval(update, 1)
@@ -24,12 +33,16 @@ window.onload = () => {
 
 function update() {
     frame++
-    if (frame % tickTime == 0) {
-        thingsMade += thingMakers
-        totalThingsMade += thingMakers
-        thingMakers += thingMakerMakers
-        thingMakerMakers += thingMakerMakerMakers
-    }
+    overflow.things += Number(thingMakers * 1000n / BigInt(tickTime)) / 1000
+    overflow.makers += Number(thingMakerMakers * 1000n / BigInt(tickTime)) / 1000
+    overflow.makermakers += Number(thingMakerMakerMakers * 1000n / BigInt(tickTime)) / 1000
+    thingsMade += BigInt(Math.floor(overflow.things))
+    totalThingsMade += BigInt(Math.floor(overflow.things))
+    thingMakers += BigInt(Math.floor(overflow.makers))
+    thingMakerMakers += BigInt(Math.floor(overflow.makermakers))
+    overflow.things -= Math.floor(overflow.things)
+    overflow.makers -= Math.floor(overflow.makers)
+    overflow.makermakers -= Math.floor(overflow.makermakers)
     while (thingsMade >= (toPrestigeLevel + prestigeLevel + 1n) ** 3n * trillion) {
         toPrestigeLevel += 1n
     }
@@ -50,7 +63,6 @@ function draw() {
         document.getElementById('autoThingMakerMakerMakerDiv').style.display = 'block'
     }
     document.getElementById('prestigeProgressBar').value = Number(((totalThingsMade - (toPrestigeLevel + prestigeLevel) ** 3n * trillion) * 100n) / (1n * ((((toPrestigeLevel + prestigeLevel + 1n) ** 3n * trillion) - (toPrestigeLevel + prestigeLevel) ** 3n * trillion))))
-    //alert(Number(((totalThingsMade - (toPrestigeLevel + prestigeLevel) ** 3n * trillion) * 100n) / ((totalThingsMade + 1n - (toPrestigeLevel + prestigeLevel) ** 3n * trillion) * 10n)))
     if (toPrestigeLevel != 0n) {
         document.getElementById('toPrestigeLevelSpan').innerHTML = '+' + toPrestigeLevel
     }
