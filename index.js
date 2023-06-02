@@ -1,3 +1,18 @@
+function l(what) {
+    return document.getElementById(what)
+}
+
+//json by default can't stringify bigints
+function toObject() {
+    return JSON.parse(JSON.stringify(this, (key, value) =>
+        typeof value === 'bigint'
+            ? value.toString()
+            : value // return everything else unchanged
+    ));
+}
+
+let popup
+
 let thingsMade = BigInt(15)
 let totalThingsMade = BigInt(15)
 let thingMakers = BigInt(0)
@@ -21,11 +36,53 @@ const quadrillion = 1000000000000000n
 
 let untilNextLevel = trillion
 
-function l(what) {
-    return document.getElementById(what)
+function encodeSave() {
+    try {
+    let save = {
+        thingsMade: thingsMade.toString(),
+        totalThingsMade: totalThingsMade.toString(),
+        thingMakers: thingMakers.toString(),
+        thingMakerMakers: thingMakerMakers.toString(),
+        thingMakerMakerMakers: thingMakerMakerMakers.toString(),
+        prestigeLevel: prestigeLevel.toString(),
+        toPrestigeLevel: toPrestigeLevel.toString(),
+        timeSaved: Date.now()
+    }
+    return LZString.compress(JSON.stringify(save))
+} catch (err) {
+    alert(err)
+}
+}
+
+function save() {
+    localStorage.setItem('save', encodeSave())
+  }
+
+function loadSave(str) {
+    let save = JSON.parse(LZString.decompress(str))
+    thingsMade = BigInt(save.thingsMade)
+    totalThingsMade = BigInt(save.totalThingsMade)
+    thingMakers = BigInt(save.thingMakers)
+    thingMakerMakers = BigInt(save.thingMakerMakers)
+    thingMakerMakerMakers = BigInt(save.thingMakerMakerMakers)
+    prestigeLevel = BigInt(save.prestigeLevel)
+    toPrestigeLevel = BigInt(save.toPrestigeLevel)
+    timeIdled = save.timeSaved
+    let now = Date.now()
+        if (now - timeIdled != 0) {
+        for (let i=1; i<=now-timeIdled; i++) {
+            if (i % tickTime == 0) {
+                thingsMade += thingMakers
+                totalThingsMade += thingMakers
+                thingMakers += thingMakerMakers
+                thingMakerMakers += thingMakerMakerMakers
+            }
+        }
+    }
 }
 
 window.onload = () => {
+    popup = l('popup')
     setInterval(update, 1)
     requestAnimationFrame(draw)
     load()
@@ -124,14 +181,6 @@ document.addEventListener("visibilitychange", function() {
     save()
   }, 60000);
 
-  function save() {
-    localStorage.setItem('thingsMade', thingsMade)
-    localStorage.setItem('totalThingsMade', totalThingsMade)
-    localStorage.setItem('thingMakers', thingMakers)
-    localStorage.setItem('thingMakerMakers', thingMakerMakers)
-    localStorage.setItem('thingMakerMakerMakers', thingMakerMakerMakers)
-  }
-
   function load() {
     if (localStorage.getItem('thingsMade')) {
     thingsMade = BigInt(parseInt(localStorage.getItem('thingsMade'), 10))
@@ -148,6 +197,9 @@ document.addEventListener("visibilitychange", function() {
     if (localStorage.getItem('thingMakerMakerMakers')) {
     thingMakerMakerMakers = BigInt(parseInt(localStorage.getItem('thingMakerMakerMakers'), 10))
     }
+    if (localStorage.getItem('save')) {
+        loadSave(localStorage.getItem('save'))
+    }
   }
 
   document.addEventListener('keydown', e => {
@@ -157,16 +209,25 @@ document.addEventListener("visibilitychange", function() {
       save()
       alert('game saved')
     }
+    if (e.ctrlKey && e.key === 'd') {
+        // Prevent the Save dialog to open
+        e.preventDefault();
+        navigator.clipboard.writeText(encodeSave());
+        alert('save copied to clipboard')
+      }
     if (e.ctrlKey && e.key === 'l') {
         e.preventDefault();
         confirmWipe()
       }
       
-      if (e.ctrlKey && e.key === 'i') {
+    /*  if (e.ctrlKey && e.key === 'i') {
         e.preventDefault();
         document.head.innerHTML += '<script src="https://kylemit.github.io/firebug-console/firebug-lite-debug.js"></script>'
       }
 
+    if (e.key === 'e') {
+        popup.showModal()
+    }*/
   });
 
   const confirmWipe = () => {

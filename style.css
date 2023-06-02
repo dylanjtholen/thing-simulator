@@ -1,7 +1,29 @@
+html {
+    font-family: sans-serif;
+}
+
 #prestigeProgressBarDiv {
     position: absolute;
     top: 8.5%;
     left: 15%;
     display: flex;
     column-gap: 10px;
+}
+
+#cornerpopup {
+    position: fixed;
+    right: 5px;
+    top: 5px;
+}
+
+#testcornerpopup {
+    background-color: yellow;
+    border: solid #000;
+    border-width: thick;
+    width: 300px;
+    height: 25px;
+    text-align: center;
+    font-size: x-large;
+    right: -100%;
+    transition: right 0.5s ease-in-out;
 }

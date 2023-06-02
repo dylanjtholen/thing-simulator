@@ -2,10 +2,14 @@
 <html>
     <head>
         <script src="index.js"></script>
+        <script language="javascript" src="lz-string.min.js"></script>
         <link rel="stylesheet" href="style.css">
     </head>
     <body>
-<dialog id="popup"></dialog>
+        <!--<div id="cornerpopup">
+            <div id="testcornerpopup">test alert</div>
+        </div>-->
+    <dialog id="popup"><form method="dialog" onkeydown="return event.key != 'Enter';"><button>X</button></form></dialog>
         <div id='prestigeProgressBarDiv'><progress id='prestigeProgressBar' max="100" value="0"></progress><span id="toPrestigeLevelSpan"></span><button onclick="ascend()">ascend</button></div>
         <p id="currentthings">things made:</p>
         <button id="makethingbutton" onclick="makeThing()">make thing</button>
